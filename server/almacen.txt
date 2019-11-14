@@ -1,0 +1,49 @@
+ //include('lib.php'); 
+  //require('./lib.php');  
+  require('./funciones.php');  
+  
+  $data['correo'] = "'".$_POST['correo']."'";
+  $data['password'] = "'".$_POST['password']."'";  
+  //alert($data['correo'] . $data['password']);
+  $con = new codigoDb('localhost', 'user_calendar', 'Adario');  
+  $response['conexion'] = $con->initConexion('calendario');
+   
+   //$2y$10$1t7CdkEjS5k4ggqQX45Bkuu3nF.TPHAtwaOxZg50GCA...
+   
+  if ($response['conexion']=='OK') {
+  	//hacemos la consulta a la base de datos para comprobar si es el usuario
+    $resultado = $con->consultarQ(['usuarios'], ['*'], ''); 
+    //$resultado = $con->consultarQuery(['usuarios'], ['correo', 'password'], 'WHERE correo="'.$_POST['correo'].'"'); 
+
+    //$resultado = $con->consultarQuery(['usuarios'], ['email', 'psw'], 'WHERE email="'.$_POST['username'].'"AND psw="'.$_POST['passw'].'"');
+
+    //$resultado = $con->consultarQuery(['usuarios'], ['correo', 'password'], 'WHERE correo ="'.$data['correo'].'"'); 
+      
+    //if($resultado->num_rows > 0){
+    if($resultado != ''){
+        //aqui verificamos el password
+        /* $fila = $resultado->fetch_assoc();
+         if(password_verify ( $data['password'] , $fila['password'] )){
+                
+                $response['msg'] = 'OK';
+		        session_start();
+		        $_SESSION['username'] = $_POST['correo'];
+         }else{
+            $response['msg'] = 'Contraceña invalida';
+         }*/
+         //$resultado = $con->prueba();
+         //echo $resultado;
+           $response['msg'] = 'OK';
+           $response['data'] = $data;
+           $response['sql'] = $resultado;
+
+      }else{
+        $response['msg'] ='No existe el usuario en la base de datos' 
+      }   
+      
+ 
+  }else {
+    $response['msg']= "No se pudo conectar a la base de datos";
+  }
+
+  echo json_encode($response);
